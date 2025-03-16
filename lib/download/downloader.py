@@ -108,15 +108,19 @@ class MediaProcessor:
             
             # Save metadata
             self._save_metadata(media_item, filename)
-            
-            # Download media if it doesn't exist
-            media_path = self.output_dir / f"{filename}.{extension}"
-            if media_path.exists():
+
+            # Get a count of the number of files matching the filename and extension
+            count = len(list(self.output_dir.rglob(f"{filename}.{extension}")))
+
+            # If any matches found, skip download
+            if count > 0:
                 logger.debug(f"Skipping existing file: {filename}.{extension}")
                 return True
-                
-            self.downloader.download_media(media_item, media_path, download_gpmf)
-            return False
+            else:
+                # Download media
+                media_path = self.output_dir / f"{filename}.{extension}"
+                self.downloader.download_media(media_item, media_path, download_gpmf)
+                return False
             
         except Exception as e:
             logger.error(f"Error processing {media_item.get('filename', 'unknown')}: {e}")
