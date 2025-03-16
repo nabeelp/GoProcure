@@ -16,8 +16,12 @@ class MediaDownloader:
         """Download media and optionally its GPMF data"""
         download_info = self.api_client.get_download_info(media_item['id'])
         
-        # Download main media file
+        # Download media file - default to main media file, but use the source media file if available
         video_url = download_info.get('_embedded', {}).get('files', [{}])[0].get('url')
+        variation_files = download_info.get('_embedded', {}).get('variations', [])
+        for file in variation_files:
+            if file.get('label') == 'source':
+                video_url = file.get('url')
         if video_url:
             self._download_file(video_url, output_path)
         
