@@ -2,3 +2,4 @@ gopro_downloads
 config.json
 .DS_Store
 __pycache__
+.venv

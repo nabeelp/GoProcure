@@ -4,7 +4,7 @@
 import argparse
 import sys
 from pathlib import Path
-from lib.config import setup_logging
+from lib.logging import setup_logging
 from lib.download.client import GoProAPIClient, ConfigManager
 from lib.download.downloader import MediaDownloader, MediaProcessor
 from lib.download.constants import Config

@@ -4,7 +4,7 @@
 import argparse
 import sys
 from pathlib import Path
-from lib.config import setup_logging
+from lib.logging import setup_logging
 from lib.organize.organizer import VideoOrganizer
 
 def parse_args() -> argparse.Namespace:

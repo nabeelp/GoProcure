@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Generator, List, Tuple
 import json
-from .metadata import FileMetadataUpdater
+from .filemetadata import FileMetadataUpdater
 
 logger = logging.getLogger(__name__)
 
