@@ -4,9 +4,9 @@ A collection of tools for downloading and organizing GoPro media from its cloud 
 
 ## Tools
 
-- `gopro-download`: Download media files from GoPro Cloud
-- `gopro-organize`: Organize local media files by date and update their metadata to reflect the actual capture date
-- `gopro-sync`: Download and organize files in one step
+- `gopro-download.py`: Download media files from GoPro Cloud
+- `gopro-organize.py`: Organize local media files by date and update their metadata to reflect the actual capture date
+- `gopro-sync.py`: Download and organize files in one step
 
 ## Installation
 
@@ -23,7 +23,12 @@ pip install -r requirements.txt
 
 3. Make scripts executable:
 ```bash
-chmod +x gopro-download gopro-organize gopro-sync
+chmod +x gopro-download.py gopro-organize.py gopro-sync.py
+```
+
+4. Execute to download and organize:
+```bash
+./gopro-sync.py --output-dir /media/nabeel/GoPro/GoProFiles/ --include-photos
 ```
 
 ## Usage
