@@ -38,11 +38,12 @@ def parse_args() -> argparse.Namespace:
 
 def main():
     args = parse_args()
-    downloads_dir = Path(args.output_dir) / "downloads"
+    downloads_dir = Path(args.output_dir)
     
     try:
         # First download
-        cmd = ["gopro-download", "-o", str(downloads_dir)]
+        download_script = Path(__file__).parent / "gopro-download.py"
+        cmd = [str(download_script), "-o", str(downloads_dir)]
         if args.include_photos:
             cmd.append("--include-photos")
         if args.max_items:
@@ -56,7 +57,8 @@ def main():
         subprocess.run(cmd, check=True)
         
         # Then organize
-        cmd = ["gopro-organize", str(downloads_dir)]
+        organize_script = Path(__file__).parent / "gopro-organize.py"
+        cmd = [str(organize_script), str(downloads_dir)]
         if args.verbose:
             cmd.append("--verbose")
             
