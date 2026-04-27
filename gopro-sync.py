@@ -2,37 +2,45 @@
 """Download and organize GoPro media files in one step."""
 
 import argparse
+import os
 import sys
 import subprocess
 from pathlib import Path
+
+def _bool_env(name: str) -> bool:
+    return os.environ.get(name, '').lower() in ('1', 'true', 'yes')
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         '-o', '--output-dir',
         type=str,
-        default='gopro_media',
-        help="Base directory for media files"
+        default=os.environ.get('GOPRO_OUTPUT_DIR', 'gopro_media'),
+        help="Base directory for media files (env: GOPRO_OUTPUT_DIR)"
     )
     parser.add_argument(
         '--include-photos',
         action='store_true',
-        help="Include photos in download"
+        default=_bool_env('GOPRO_INCLUDE_PHOTOS'),
+        help="Include photos in download (env: GOPRO_INCLUDE_PHOTOS)"
     )
     parser.add_argument(
         '--max-items',
         type=int,
-        help="Maximum number of items to download"
+        default=int(os.environ.get('GOPRO_MAX_ITEMS', 0)) or None,
+        help="Maximum number of items to download (env: GOPRO_MAX_ITEMS)"
     )
     parser.add_argument(
         '--download-gpmf',
         action='store_true',
-        help="Download GPMF data"
+        default=_bool_env('GOPRO_DOWNLOAD_GPMF'),
+        help="Download GPMF data (env: GOPRO_DOWNLOAD_GPMF)"
     )
     parser.add_argument(
         '-v', '--verbose',
         action='store_true',
-        help="Enable verbose logging"
+        default=_bool_env('GOPRO_VERBOSE'),
+        help="Enable verbose logging (env: GOPRO_VERBOSE)"
     )
     return parser.parse_args()
 
@@ -43,7 +51,7 @@ def main():
     try:
         # First download
         download_script = Path(__file__).parent / "gopro-download.py"
-        cmd = [str(download_script), "-o", str(downloads_dir)]
+        cmd = [sys.executable, str(download_script), "-o", str(downloads_dir)]
         if args.include_photos:
             cmd.append("--include-photos")
         if args.max_items:
@@ -58,7 +66,7 @@ def main():
         
         # Then organize
         organize_script = Path(__file__).parent / "gopro-organize.py"
-        cmd = [str(organize_script), str(downloads_dir)]
+        cmd = [sys.executable, str(organize_script), str(downloads_dir)]
         if args.verbose:
             cmd.append("--verbose")
             

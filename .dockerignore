@@ -1,0 +1,27 @@
+# Git
+.git/
+.gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Credentials – never bake secrets into the image
+config.json
+
+# Local media output
+media/
+
+# Editor/OS files
+.DS_Store
+*.swp
+*.idea/
+.vscode/
