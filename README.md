@@ -92,6 +92,65 @@ docker compose run --rm goprocure python gopro-download.py
 
 ---
 
+## CI/CD — Automated Docker Hub publishing
+
+A GitHub Actions workflow (`.github/workflows/docker-publish.yml`) automatically builds and pushes the Docker image to Docker Hub.
+
+### Trigger behaviour
+
+| Event | Build | Push | Tags applied |
+|---|---|---|---|
+| Pull request → `main` | Yes | No | *(validation only)* |
+| Push to `main` | Yes | Yes | `main`, `latest` |
+| Version tag `v1.2.3` | Yes | Yes | `1.2.3`, `1.2`, `latest` |
+
+### One-time setup
+
+Two secrets must be added to the repository before the workflow can push images.
+
+#### 1. Create a Docker Hub access token
+
+1. Log in to [hub.docker.com](https://hub.docker.com)
+2. Click your avatar → **Account Settings**
+3. Navigate to **Security → Personal access tokens**
+4. Click **Generate new token**
+5. Give it a description (e.g. `goprocure-github-actions`) and set permissions to **Read & Write**
+6. Click **Generate** and copy the token — it is only shown once
+
+#### 2. Add secrets to GitHub
+
+1. Open the repository on GitHub
+2. Go to **Settings → Secrets and variables → Actions**
+3. Click **New repository secret** for each of the following:
+
+| Secret name | Value |
+|---|---|
+| `DOCKERHUB_USERNAME` | Your Docker Hub username |
+| `DOCKERHUB_TOKEN` | The access token created above |
+
+Once set, any push to `main` or a version tag will trigger a build and publish the image to `<your-username>/goprocure` on Docker Hub.
+
+### Using the published image
+
+Replace `<your-username>` with your Docker Hub username:
+
+```bash
+docker pull <your-username>/goprocure:latest
+```
+
+Or update `docker-compose.yml` to use the pre-built image instead of building locally:
+
+```yaml
+services:
+  goprocure:
+    image: <your-username>/goprocure:latest
+    environment:
+      - GOPRO_ACCESS_TOKEN=your-token
+      ...
+```
+
+---
+
 ## Running locally
 
 ### Installation
