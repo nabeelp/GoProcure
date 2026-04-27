@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import requests
 from typing import Dict, Optional
 from pathlib import Path
@@ -13,10 +14,27 @@ class ConfigManager:
         self.config_path = config_path
         
     def load_credentials(self) -> Dict[str, str]:
+        """Load credentials from environment variables or config file.
+        
+        Environment variables take precedence:
+          GOPRO_ACCESS_TOKEN
+          GOPRO_USER_ID
+        """
+        access_token = os.environ.get('GOPRO_ACCESS_TOKEN')
+        user_id = os.environ.get('GOPRO_USER_ID')
+
+        if access_token and user_id:
+            logger.debug("Loaded credentials from environment variables.")
+            return {"access_token": access_token, "user_id": user_id}
+
         try:
             with open(self.config_path, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
+            logger.error(
+                "No credentials found. Set GOPRO_ACCESS_TOKEN and GOPRO_USER_ID "
+                "environment variables, or create a config.json file."
+            )
             self._create_template_config()
             raise SystemExit(1)
     

@@ -1,0 +1,29 @@
+services:
+  goprocure:
+    build: .
+    # Override the default command to run only download, organize, or both:
+    #   command: ["python", "gopro-download.py"]
+    #   command: ["python", "gopro-organize.py"]
+    #   command: ["python", "gopro-sync.py"]   # default
+    environment:
+      # --- Required credentials ---
+      - GOPRO_ACCESS_TOKEN=your-access-token-here
+      - GOPRO_USER_ID=your-user-id-here
+
+      # --- Output directory (must match the volume mount below) ---
+      - GOPRO_OUTPUT_DIR=/data
+
+      # --- Download options ---
+      - GOPRO_INCLUDE_PHOTOS=false     # Set to "true" to include photos
+      - GOPRO_MAX_ITEMS=10000          # Maximum number of items to download
+      - GOPRO_DOWNLOAD_GPMF=false      # Set to "true" to download GPMF sidecar data
+
+      # --- Organize options ---
+      - GOPRO_ORGANIZE_COPY=false      # Set to "true" to copy instead of move
+      - GOPRO_RECURSIVE=false          # Set to "true" to recurse into subdirectories
+      - GOPRO_DRY_RUN=false            # Set to "true" for a dry run (no changes)
+
+      # --- Logging ---
+      - GOPRO_VERBOSE=false            # Set to "true" for verbose output
+    volumes:
+      - ./media:/data                  # Host path where media files will be saved
