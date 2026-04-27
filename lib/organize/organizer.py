@@ -9,9 +9,14 @@ from .filemetadata import FileMetadataUpdater
 logger = logging.getLogger(__name__)
 
 def find_video_files(source_dir: Path, recursive: bool = False) -> Generator[Path, None, None]:
-    """Find all MP4 files in the source directory"""
-    pattern = "**/*.mp4" if recursive else "*.mp4"
-    yield from source_dir.glob(pattern)
+    """Find all MP4 files in the source directory (case-insensitive)"""
+    patterns = ("**/*.mp4", "**/*.MP4") if recursive else ("*.mp4", "*.MP4")
+    seen = set()
+    for pattern in patterns:
+        for path in source_dir.glob(pattern):
+            if path not in seen:
+                seen.add(path)
+                yield path
 
 def find_related_files(video_path: Path) -> Tuple[Path, List[Path]]:
     """Find metadata and optional highlights files"""

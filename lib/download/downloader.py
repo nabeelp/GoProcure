@@ -100,7 +100,11 @@ class MediaProcessor:
         """Process a single media item, returns True if item already existed"""
         try:
             filename = Path(media_item['filename']).with_suffix('').name
-            extension = media_item['file_extension'].lower()
+            raw_extension = media_item.get('file_extension') or Path(media_item['filename']).suffix.lstrip('.')
+            if not raw_extension:
+                logger.warning(f"Skipping item with no file extension: {media_item.get('filename', 'unknown')}")
+                return False
+            extension = raw_extension.lower()
             
             # Handle highlights
             if media_item['moments_count'] > 0:
